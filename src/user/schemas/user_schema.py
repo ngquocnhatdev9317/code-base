@@ -1,5 +1,6 @@
-from database.base_schema import BaseSchema
 from marshmallow_sqlalchemy import auto_field
+
+from database.base_schema import BaseSchema
 from user.model import User
 
 

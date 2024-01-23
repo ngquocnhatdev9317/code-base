@@ -5,10 +5,11 @@ from aiohttp import web
 from aiohttp_apispec import setup_aiohttp_apispec
 from aiohttp_middlewares import cors_middleware
 from sqlalchemy.ext.asyncio import AsyncEngine
-from database.base_model import BaseModel
 
+from database.base_model import BaseModel
 from database.connection import Connection
 from router import add_routers
+from utilities.constants import ENGINE_KEY
 from utilities.logger import logger_info, logging
 from utilities.middlewares.error_handle import error_middleware
 
@@ -46,7 +47,7 @@ def create_app() -> web.Application:
     loop.run_until_complete(init_database(connect.engine))
     aiohttp_autoreload.start(loop)
 
-    application["engine"] = connect.engine
+    application[ENGINE_KEY] = connect.engine
     logger_info("create connection success")
 
     setup_aiohttp_apispec(application, swagger_path="/docs", version="0.0.2")

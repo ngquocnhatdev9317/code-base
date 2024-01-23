@@ -1,0 +1,25 @@
+[project]
+name = "code-base"
+version = "0.0.1"
+description = "This is the code base for aio-http framework"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "GPL-3.0-or-later"
+keywords = ["code-base", "development"]
+authors = [
+    { name = "Nguyen Doan Quoc Nhat", email = "ngquocnhat9317@outlook.com" }
+]
+maintainers = [
+    { name = "Nguyen Doan Quoc Nhat", email = "ngquocnhat9317@outlook.com" }
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python"
+]
+
+[project.urls]
+homepage = "https://github.com/ngquocnhatdev9317/code-base"
+repository = "https://github.com/ngquocnhatdev9317/code-base"
+
+[tool.flake8]
+max-line-length = 120

@@ -11,7 +11,3 @@ def logger_info(msg: object):
 
 def logger_error(msg: object):
     logging.error(msg.capitalize() if isinstance(msg, str) else msg)
-
-
-def logger_warn(msg: object):
-    logging.warn(msg.capitalize() if isinstance(msg, str) else msg)
