@@ -1,5 +1,6 @@
-from database.base_model import BaseModel
 from sqlalchemy.orm import Mapped, mapped_column
+
+from database.base_model import BaseModel
 
 
 class User(BaseModel):
@@ -11,4 +12,4 @@ class User(BaseModel):
     is_superuser: Mapped[bool] = mapped_column(default=False)
 
     def __repr__(self):
-        return "<User (id={self.id})>".format(self=self)
+        return f"<User (id={self.id})>"

@@ -1,5 +1,7 @@
+# pylint: disable=unused-argument
 from aiohttp import web
 from aiohttp_apispec import docs
+
 from user.router import user_routers
 
 

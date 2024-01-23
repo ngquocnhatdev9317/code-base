@@ -1,6 +1,7 @@
 from aiohttp import web
 from aiohttp_middlewares import error_middleware as generate_error_middleware
 from aiohttp_middlewares.error import error_context
+
 from utilities.logger import logger_error
 from utilities.schemas.response_schema import ErrorResponseSchema
 

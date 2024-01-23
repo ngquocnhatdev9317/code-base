@@ -2,8 +2,8 @@ from marshmallow import Schema, fields
 
 
 class BaseResponseSchema(Schema):
-    status = fields.Bool(default=True)
-    status_code = fields.Int(default=200)
+    status = fields.Bool(dump_default=True)
+    status_code = fields.Int(dump_default=200)
 
 
 class SuccessResponse(BaseResponseSchema):
@@ -11,11 +11,11 @@ class SuccessResponse(BaseResponseSchema):
 
 
 class ErrorDetailSchema(Schema):
-    error_code = fields.Str(default="")
+    error_code = fields.Str(dump_default="")
     field = fields.Str()
     message = fields.Str(required=True)
 
 
 class ErrorResponseSchema(BaseResponseSchema):
-    status = fields.Bool(default=False)
+    status = fields.Bool(dump_default=False)
     error_detail = fields.Nested(ErrorDetailSchema(), required=True)

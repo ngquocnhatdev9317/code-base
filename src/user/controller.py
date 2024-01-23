@@ -1,5 +1,6 @@
 from aiohttp import web
 from aiohttp_apispec import docs, json_schema
+
 from user.repository import UserRepository
 from user.schemas.request_schema import CreateUserSchema
 from user.schemas.response_schema import ListUserSchema
