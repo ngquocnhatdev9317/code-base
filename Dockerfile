@@ -20,4 +20,4 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY . /app/
 WORKDIR /app/src/
 
-CMD [ "gunicorn", "main:app", "--bind", "0.0.0.0:8080", "--worker-class", "aiohttp.GunicornWebWorker" ]
+CMD [ "gunicorn", "main:create_app", "--bind", "0.0.0.0:8080", "--worker-class", "aiohttp.GunicornWebWorker" ]
