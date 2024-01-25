@@ -13,6 +13,13 @@ This is the code base for aio-http framework
 
 # Build local
 
+## Run source local
+
+```bash
+gunicorn main:create_app --bind 0.0.0.0:8080 --worker-class aiohttp.GunicornWebWorker
+
+```
+
 ## Build docker
 
 ```bash

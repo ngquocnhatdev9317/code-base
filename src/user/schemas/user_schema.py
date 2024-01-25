@@ -12,4 +12,5 @@ class UserSchema(BaseSchema):
     id = auto_field()
     name = auto_field()
     email = auto_field()
+    password = auto_field()
     is_superuser = auto_field()
