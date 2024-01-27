@@ -19,3 +19,8 @@ class ErrorDetailSchema(Schema):
 class ErrorResponseSchema(BaseResponseSchema):
     status = fields.Bool(dump_default=False)
     error_detail = fields.Nested(ErrorDetailSchema(), required=True)
+
+
+class ErrorsResponseSchema(BaseResponseSchema):
+    status = fields.Bool(dump_default=False)
+    errors_detail = fields.Nested(ErrorDetailSchema(many=True), required=True)

@@ -5,15 +5,15 @@ from aiohttp import web
 from aiohttp_apispec import setup_aiohttp_apispec
 from aiohttp_middlewares import cors_middleware
 
-from database.connection import Connection, init_database
+from database.connection import Connection
 from router import add_routers
-from utilities.configs import DEBUG
+from utilities.configs import DEV
 from utilities.constants import ENGINE_KEY
 from utilities.logger import logger_info, logging
 from utilities.middlewares.error_handle import error_middleware
 
 
-async def create_app() -> web.Application:  # pragma: no cover
+async def create_app() -> web.Application:
     """
     Create and configure the web application.
 
@@ -34,13 +34,12 @@ async def create_app() -> web.Application:  # pragma: no cover
     add_routers(app=application)
     connect = Connection()
 
-    if DEBUG:
-        print("debug")
+    if DEV:  # pragma: no cover
         loop = asyncio.get_running_loop()
+        asyncio.run_coroutine_threadsafe(connect.init_database(), loop=loop)
         logger_info("autoreload onchange is start!")
         aiohttp_autoreload.start(loop)
 
-    await init_database(connect.engine)
     application[ENGINE_KEY] = connect.engine
     logger_info("create connection success")
 

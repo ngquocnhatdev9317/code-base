@@ -13,21 +13,37 @@ This is the code base for aio-http framework
 
 # Build local
 
-## Run source local
-
-```bash
-gunicorn main:create_app --bind 0.0.0.0:8080 --worker-class aiohttp.GunicornWebWorker
-
-```
-
 ## Build docker
 
 ```bash
 
 $ cp .env.example .env
+$ docker-compose up --build
 
-$ docker build . -t code-base-app  # code-base-app is name of image
-$ docker run code-base-app
+```
+
+## Swagger
+
+Open swagger at [http://localhost:8080/docs](http://localhost:8080/docs)
+
+## Run unittest local
+
+```bash
+
+$ python -m pytest src/
+
+# Run unittest with coverage report
+$ python -m pytest --cov src/
+
+```
+
+## Run format code after change files
+
+```bash
+# format sort for import
+$ python -m isort src/
+# format code with black
+$ python -m black --cov src/
 
 ```
 
@@ -43,7 +59,6 @@ code-base/
 |   |   |-- connection.py
 |   |-- user/                               # Contain everything of user feature
 |   |   |-- schemas/
-|   |   |-- tests/
 |   |   |-- controller.py
 |   |   |-- model.py
 |   |   |-- repository.py
@@ -53,6 +68,8 @@ code-base/
 |   |   |-- schemas/
 |   |   |-- configs.py
 |   |   |-- logger.py
+|   |-- tests/                              # Contain all testcase unittest in project
+|   |-- conftest.py                         # Define and config Base test for unittest
 |   |-- main.py                             # The main of project
 |   |-- router.py
 |-- README.md
