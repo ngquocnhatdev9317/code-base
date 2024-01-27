@@ -4,10 +4,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SCHEMA = os.getenv("PG_SCHEMA", "")
-HOST = os.getenv("PG_HOST", "")
-PORT = os.getenv("PG_PORT", "")
-USER = os.getenv("PG_USER", "")
-PASSWORD = os.getenv("PG_PASSWORD", "")
 URL = os.getenv("PG_URL", "")
-DEBUG = bool(os.getenv("DEBUG", "False") == "True")
+SCHEMA = os.getenv("PG_SCHEMA", "dummy")
+DEV = bool(os.getenv("DEV", "False") == "True")

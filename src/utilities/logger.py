@@ -3,7 +3,7 @@ import logging
 from gunicorn import glogging
 
 logging.basicConfig(
-    format="%(asctime)s - %(levelname)s: %(message)s", level=logging.DEBUG
+    format="%(asctime)s - %(levelname)s: %(message)s", level=logging.INFO
 )
 
 
