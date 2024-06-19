@@ -1,16 +1,12 @@
-from marshmallow_sqlalchemy import auto_field
-
-from database.base_schema import BaseSchema
-from user.model import User
+from pydantic import BaseModel
 
 
-class UserSchema(BaseSchema):
-    class Meta:
-        model = User
-        load_instance = True
+class UserSchema(BaseModel):
+    id: int
+    name: str
+    email: str
+    password: str
+    is_superuser: bool
 
-    id = auto_field()
-    name = auto_field()
-    email = auto_field()
-    password = auto_field()
-    is_superuser = auto_field()
+    class Config:
+        from_attributes = True
