@@ -1,23 +1,17 @@
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
-from database.base_model import BaseModel
-from utilities.configs import SCHEMA, URL
-from utilities.logger import logger_info
+from utilities.configs import POSTGRES_DB, URL
 
 
 class Connection:
     def __init__(self, engine: AsyncEngine = None) -> None:
-        self.__engine = engine or create_async_engine(
-            f"postgresql+asyncpg://{URL}/{SCHEMA}"
-        )
+        self.__engine = engine or create_async_engine(f"postgresql+asyncpg://{URL}/{POSTGRES_DB}")
 
     @property
-    def engine(self):
+    def engine(self) -> AsyncEngine:
         return self.__engine
 
-    async def init_database(self):
-        async with self.engine.begin() as conn:
-            await conn.run_sync(BaseModel.metadata.drop_all)
-            await conn.run_sync(BaseModel.metadata.create_all)
 
-            logger_info("initialized database")
+def get_postgres_container(url_connection):
+    engine = create_async_engine(url_connection)
+    return engine

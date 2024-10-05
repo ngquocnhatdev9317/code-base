@@ -41,9 +41,8 @@ $ python -m pytest --cov src/
 
 ```bash
 # format sort for import
-$ python -m isort src/
-# format code with black
-$ python -m black --cov src/
+$ poetry run ruff format src/
+
 
 ```
 

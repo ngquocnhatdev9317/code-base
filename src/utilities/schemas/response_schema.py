@@ -1,26 +1,33 @@
-from marshmallow import Schema, fields
+from typing import List, Optional, Union
+
+from pydantic import BaseModel
 
 
-class BaseResponseSchema(Schema):
-    status = fields.Bool(dump_default=True)
-    status_code = fields.Int(dump_default=200)
+class BaseResponseSchema(BaseModel):
+    status: bool = True
+    status_code: int = 200
 
 
 class SuccessResponse(BaseResponseSchema):
-    message = fields.Str(required=True)
+    message: str
 
 
-class ErrorDetailSchema(Schema):
-    error_code = fields.Str(dump_default="")
-    field = fields.Str()
-    message = fields.Str(required=True)
+class ErrorFieldDetailSchema(BaseModel):
+    error_code: Optional[str] = None
+    field: str
+    message: str
+
+
+class ErrorDetailSchema(BaseModel):
+    error_code: Optional[str] = None
+    message: str
 
 
 class ErrorResponseSchema(BaseResponseSchema):
-    status = fields.Bool(dump_default=False)
-    error_detail = fields.Nested(ErrorDetailSchema(), required=True)
+    status: bool = False
+    error_detail: ErrorDetailSchema
 
 
 class ErrorsResponseSchema(BaseResponseSchema):
-    status = fields.Bool(dump_default=False)
-    errors_detail = fields.Nested(ErrorDetailSchema(many=True), required=True)
+    status: bool = False
+    errors_detail: Union[List[Union[ErrorFieldDetailSchema, ErrorDetailSchema]], List]

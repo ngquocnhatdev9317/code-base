@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% block head %}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <link href="s/styles/tailwind.css" rel="stylesheet">
+  <link href="s/styles/style.css" rel="stylesheet">
+  <title>{% block title %}{% endblock %}</title>
+  {% endblock %}
+</head>
+
+<body class="h-dvh">
+  {% block header %}{% endblock %}
+  {% block main %}{% endblock %}
+  {% include "components/loading.html.j2" %}
+</body>
+{% block script %}{% endblock %}
+
+</html>

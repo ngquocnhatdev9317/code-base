@@ -1,65 +1,39 @@
 from aiohttp import web
-from aiohttp_apispec import docs, json_schema
+from aiohttp_pydantic.oas.typing import r200, r201
 
-from user.repository import UserRepository
 from user.schemas.request_schema import CreateUserSchema
-from user.schemas.response_schema import ListUserSchema
-from utilities.schemas.response_schema import ErrorResponseSchema, SuccessResponse
+from user.schemas.response_schema import ListUserResponseSchema
+from user.service import UserService
+from utilities.base_view import BaseView
+from utilities.schemas.request_schema import PaginationRequest
+from utilities.schemas.response_schema import SuccessResponse
 
 
-@docs(
-    tags=["User"],
-    summary="Get list user",
-    description="Get list user",
-    responses={
-        200: {
-            "schema": ListUserSchema,
-            "description": "Success response",
-        },
-        400: {
-            "schema": ErrorResponseSchema,
-            "description": "Error response",
-        },
-        500: {
-            "schema": ErrorResponseSchema,
-            "description": "Error response",
-        },
-    },
-)
-async def list_user(request: web.Request):
-    repo = UserRepository(request)
-    data = await repo.get_list()
-    return web.json_response(
-        data=ListUserSchema().dump({"result": data}),
-        status=200,
-    )
+class UserAPIView(BaseView):
+    async def get(self, params: PaginationRequest) -> r200[ListUserResponseSchema]:
+        """
+        Get user list
 
+        Tags: User
+        """
+        service = UserService(self.request)
+        data = await service.get_list(params)
 
-@docs(
-    tags=["User"],
-    summary="Add user",
-    description="Add user",
-    responses={
-        201: {
-            "schema": SuccessResponse,
-            "description": "Success response",
-        },
-        400: {
-            "schema": ErrorResponseSchema,
-            "description": "Error response",
-        },
-        500: {
-            "schema": ErrorResponseSchema,
-            "description": "Error response",
-        },
-    },
-)
-@json_schema(CreateUserSchema())
-async def create_user(request: web.Request):
-    user_data = await request.json()
-    repo = UserRepository(request)
-    await repo.add_user(user_data)
+        return web.json_response(
+            data=ListUserResponseSchema(result=data).model_dump(),
+            status=200,
+        )
 
-    return web.json_response(
-        data=SuccessResponse().dump({"message": "Create user success!"}), status=201
-    )
+    async def post(self, user_params: CreateUserSchema) -> r201[SuccessResponse]:
+        """
+        Create user
+
+        Tags: User
+        """
+        service = UserService(self.request)
+        await service.add_user(user_params.model_dump())
+
+        return web.json_response(
+            data=SuccessResponse(message="Create user success!").model_dump(),
+            status=201,
+        )

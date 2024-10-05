@@ -4,24 +4,20 @@ from typing import Any, Coroutine
 
 from aiohttp.test_utils import AioHTTPTestCase
 from aiohttp.web import Application
-from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy_utils import create_database, database_exists, drop_database
 
 from database.base_model import BaseModel
+from database.connection import get_postgres_container
 from main import create_app
-from utilities.configs import SCHEMA, URL
+from tests.mockup import mock_user
+from utilities.configs import POSTGRES_DB, URL
 
-url_asyncpg = f"postgresql+asyncpg://{URL}/{SCHEMA}"
+url_asyncpg = f"postgresql+asyncpg://{URL}/{POSTGRES_DB}"
 url_psycopg = url_asyncpg.replace("asyncpg", "psycopg2")
 
 
-def get_postgres_container():
-    engine = create_async_engine(url_asyncpg)
-    return engine
-
-
 async def run_init():
-    engine = get_postgres_container()
+    engine = get_postgres_container(url_asyncpg)
 
     async with engine.begin() as conn:
         await conn.run_sync(BaseModel.metadata.drop_all)
@@ -52,10 +48,35 @@ class BaseTestCase(AioHTTPTestCase):
     def tearDownClass(cls):
         run_tear_down()
 
-    async def client_get(self, url, params=None):
-        request = self.client.get(url, params=params)
-        return await request
+    async def client_get(self, url, params=None, headers=None):
+        response = await self.client.get(url, params=params, headers=headers)
+        return response
 
-    async def client_post(self, url, data=None):
-        request = self.client.post(url, data=json.dumps(data))
-        return await request
+    async def client_post(self, url, data=None, headers=None):
+        response = await self.client.post(url, data=json.dumps(data), headers=headers)
+        return response
+
+    async def client_delete(self, url, data=None, headers=None):
+        response = await self.client.delete(url, data=json.dumps(data), headers=headers)
+        return response
+
+
+class BaseAuthTestCase(BaseTestCase):
+    authentication_header = "Bearer "
+
+    @classmethod
+    def setUpClass(cls):
+        if database_exists(url_psycopg):
+            drop_database(url_psycopg)
+        create_database(url_psycopg)
+
+        loop = asyncio.new_event_loop()
+
+        loop.run_until_complete(run_init())
+        loop.run_until_complete(mock_user(1, email="admin@test.com", password="password"))
+        loop.stop()
+
+    async def login_test(self):
+        response = await self.client_post("/auth/login", data={"email": "admin@test.com", "password": "password"})
+        response_json = await response.json()
+        self.authentication_header += response_json["result"]["access_token"]
