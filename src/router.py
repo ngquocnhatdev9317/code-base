@@ -1,24 +1,17 @@
 # pylint: disable=unused-argument
+import aiohttp_jinja2
 from aiohttp import web
-from aiohttp_apispec import docs
 
-from user.router import user_routers
+from authentication.router import authentication_view
+from user.router import user_view
 
 
-@docs(
-    tags=["Heath Check"],
-    summary="Check heath code",
-    description="Check heath code",
-    responses={
-        200: {
-            "description": "Success response",
-        },
-    },
-)
+@aiohttp_jinja2.template("pages/index.html.j2")
 async def welcome(request: web.Request):
-    return web.Response(text="Welcome to home page")
+    return {"version": "is_data"}
 
 
 def add_routers(app: web.Application):
     app.add_routes([web.get("/", welcome, name="welcome", allow_head=False)])
-    app.add_routes(user_routers)
+    app.add_routes(user_view)
+    app.add_routes(authentication_view)

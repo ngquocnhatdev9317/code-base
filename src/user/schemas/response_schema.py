@@ -1,10 +1,8 @@
-from marshmallow import fields
+from typing import List
 
 from user.schemas.user_schema import UserSchema
 from utilities.schemas.response_schema import BaseResponseSchema
 
 
-class ListUserSchema(BaseResponseSchema):
-    result = fields.List(
-        fields.Nested(UserSchema(exclude=["is_superuser"])), required=True
-    )
+class ListUserResponseSchema(BaseResponseSchema):
+    result: List[UserSchema]

@@ -10,7 +10,7 @@ class TestUser(BaseTestCase):
 
     async def test_user_api_get_should_return_correct_when_database_have_data(self):
         await self.set_up_user(1)
-        response = await self.client_get("/user")
+        response = await self.client_get("/users")
         response_json = await response.json()
 
         self.assertEqual(response.status, 200)
@@ -19,7 +19,7 @@ class TestUser(BaseTestCase):
         self.assertEqual(len(response_json["result"]), 1)
 
         await self.set_up_user(10)
-        response = await self.client_get("/user")
+        response = await self.client_get("/users")
         response_json = await response.json()
 
         self.assertEqual(response.status, 200)
@@ -29,7 +29,7 @@ class TestUser(BaseTestCase):
 
     async def test_user_api_post_should_success_when_send_correct_parameters(self):
         response = await self.client_post(
-            "/user",
+            "/users",
             data={
                 "name": "usernameTest",
                 "email": "emailTest@email.com",
@@ -44,7 +44,7 @@ class TestUser(BaseTestCase):
 
     async def test_user_api_post_should_fail_when_send_wrong_parameters(self):
         response = await self.client_post(
-            "/user",
+            "/users",
             data={
                 "name": "usernameTest",
                 "wrongfield": "emailTest@email.com",
@@ -52,23 +52,25 @@ class TestUser(BaseTestCase):
             },
         )
         response_json = await response.json()
+        print(response_json)
 
-        self.assertEqual(response.status, 400)
+        self.assertEqual(response.status, 422)
         self.assertEqual(response_json["status"], False)
-        self.assertEqual(response_json["status_code"], 400)
-        self.assertEqual(len(response_json["errors_detail"]), 2)
+        self.assertEqual(response_json["status_code"], 422)
+        self.assertEqual(len(response_json["errors_detail"]), 1)
 
     async def test_user_api_post_should_fail_when_send_miss_parameters(self):
         response = await self.client_post(
-            "/user",
+            "/users",
             data={
                 "name": "usernameTest",
                 "password": "abc",
             },
         )
         response_json = await response.json()
+        print(response_json)
 
-        self.assertEqual(response.status, 400)
+        self.assertEqual(response.status, 422)
         self.assertEqual(response_json["status"], False)
-        self.assertEqual(response_json["status_code"], 400)
+        self.assertEqual(response_json["status_code"], 422)
         self.assertEqual(len(response_json["errors_detail"]), 1)

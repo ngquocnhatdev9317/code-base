@@ -1,0 +1,48 @@
+{% extends "layout_base/base.html.j2" %}
+
+{% block head %}
+{{ super() }}
+<meta name="description" content="Home page of Code Base project">
+{% endblock %}
+
+{% block title %}Welcome to Code Base{% endblock %}
+
+{% block header %}
+<header>
+  <nav class="bg-zinc-400 py-4">
+    <div class="container px-4 mx-auto flex items-left">
+      <a href="/" class="font-bold text-xl text-white">Code Base</a>
+    </div>
+  </nav>
+</header>
+{% endblock %}
+
+{% macro get_button(title, description, alt, path, path_image) -%}
+<a href="{{ path }}" class="my-4 md:my-0">
+  <button
+    class="border-2 border-zinc-900 rounded-md w-[150px] h-[140px] shadow-md hover:shadow-lg transition flex flex-col justify-center items-center">
+    <img src="{{ path_image }}" width="40px" alt="{{ alt }}" class="mb-1" />
+    <h3 class="text-[18px] font-semibold">{{ title }}</h3>
+    <span class="text-[14px] text-zinc-500">{{ description }}</span>
+  </button>
+</a>
+{%- endmacro -%}
+
+{% block main %}
+<main class="flex justify-center h-[calc(100%-60px)] items-center text-zinc-800">
+  <section class="w-[calc(100%-40px)] md:w-2/3 h-fit">
+    <h1 class="text-center font-semibold md:text-[55px] text-[45px] text-zinc-700">
+      Welcome to
+    </h1>
+    <h1 class="text-center font-bold md:text-[75px] text-[60px] text-zinc-700">
+      Code Base
+    </h1>
+    <div class="flex justify-around mt-2 md:flex-row flex-col items-center">
+      {{ get_button("Swagger", "Move to Swagger", "swagger icon", "/docs", "/s/images/swagger_icon.svg") }}
+      {{ get_button("Admin", "Move to Admin", "admin icon", "/admin", "/s/images/admin_icon.svg") }}
+      {{ get_button("Source", "Move to Github", "github icon", "https://github.com/ngquocnhatdev9317/code-base",
+      "/s/images/github_icon.svg") }}
+    </div>
+  </section>
+</main>
+{% endblock %}
