@@ -22,12 +22,3 @@ repos:
     hooks:
       - id: flake8
         args: [--config=.flake8]
-  # - repo: local
-  #   hooks:
-  #     - id: pytest
-  #       name: pytest
-  #       entry: bash -c "PWD=$(pwd) && export PYTHONPATH=\"${PYTHONPATH}:${PWD}\" && ./env/bin/pytest"
-  #       exclude: ^migrations
-  #       language: system
-  #       types: [python]
-  #       args: [--config=.flake8]

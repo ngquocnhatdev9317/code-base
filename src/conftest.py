@@ -6,11 +6,11 @@ from aiohttp.test_utils import AioHTTPTestCase
 from aiohttp.web import Application
 from sqlalchemy_utils import create_database, database_exists, drop_database
 
-from database.base_model import BaseModel
+from core.base.model import BaseModel
+from core.configs import POSTGRES_DB, URL
 from database.connection import get_postgres_container
 from main import create_app
 from tests.mockup import mock_user
-from utilities.configs import POSTGRES_DB, URL
 
 url_asyncpg = f"postgresql+asyncpg://{URL}/{POSTGRES_DB}"
 url_psycopg = url_asyncpg.replace("asyncpg", "psycopg2")

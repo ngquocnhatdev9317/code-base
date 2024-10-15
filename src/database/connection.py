@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
-from utilities.configs import POSTGRES_DB, URL
+from core.configs import POSTGRES_DB, URL
 
 
 class Connection:

@@ -2,14 +2,15 @@ import datetime
 import logging
 
 import jwt
+from aiohttp.web_exceptions import HTTPUnauthorized
 from passlib.hash import pbkdf2_sha256
 from redis.asyncio import Redis
 
 from authentication.schemas.authentication_schema import AuthUser, Token
-from database.base_service import BaseService
+from core.base.service import BaseService
+from core.configs import ACCESS_EXPIRE, REFRESH_EXPIRE, SECRET_CODE
+from core.constants import SESSION_KEY
 from user.repository import UserRepository
-from utilities.configs import ACCESS_EXPIRE, REFRESH_EXPIRE, SECRET_CODE
-from utilities.constants import SESSION_KEY
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ class AuthenticationService(BaseService[UserRepository]):
 
             return token
 
-        return None
+        raise HTTPUnauthorized(reason="The user name or password are incorrect.")
 
     async def logout(self, access_token):
         await self.redis.delete(access_token)

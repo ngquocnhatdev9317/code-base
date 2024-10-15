@@ -3,7 +3,7 @@ from typing import Dict, Generic, List, TypeVar
 from aiohttp import web
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from utilities.constants import DB_KEY
+from core.constants import DB_KEY
 
 T = TypeVar("T")
 

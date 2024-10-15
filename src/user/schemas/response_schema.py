@@ -1,7 +1,7 @@
 from typing import List
 
+from core.base.schemas.response import BaseResponseSchema
 from user.schemas.user_schema import UserSchema
-from utilities.schemas.response_schema import BaseResponseSchema
 
 
 class ListUserResponseSchema(BaseResponseSchema):
