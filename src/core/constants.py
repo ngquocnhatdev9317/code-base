@@ -2,12 +2,8 @@ from aiohttp import web
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from authentication.schemas.authentication_schema import AuthUser
-
 DB_KEY = web.AppKey("session_connect", AsyncEngine)
 SESSION_KEY = web.AppKey("session_redis", Redis)
-
-AUTH_KEY = web.AppKey("auth", AuthUser)
 
 ERROR_CODE = {
     400: "ERROR_400: Invalid",

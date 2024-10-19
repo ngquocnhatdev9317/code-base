@@ -2,14 +2,15 @@ from __future__ import print_function
 
 import os
 import sys
+from importlib import import_module
 from logging.config import fileConfig
 
 from sqlalchemy import create_engine
 
 from alembic import context
-from src.database.base_model import Base
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
+alembic_model = import_module("core.alembic")
 
 
 # this is the Alembic Config object, which provides
@@ -21,7 +22,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-target_metadata = Base.metadata
+target_metadata = alembic_model.BaseModel.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

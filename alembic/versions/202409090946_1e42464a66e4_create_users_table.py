@@ -23,16 +23,16 @@ def upgrade() -> None:
     op.create_table(
         "users",
         sa.Column(sa.Integer, name="id", primary_key=True, autoincrement=True),
-        sa.Column(sa.String(30), name="name", unique=True),
+        sa.Column(sa.String(30), name="username", unique=True),
         sa.Column(sa.String(50), name="email", unique=True),
         sa.Column(sa.String(200), name="password"),
         sa.Column(sa.Boolean, name="is_superuser", default=False),
         sa.Column(sa.DateTime, name="created_at", default=datetime.now),
         sa.Column(sa.DateTime, name="updated_at", default=datetime.now, onupdate=datetime.now),
     )
-    op.create_unique_constraint("UQ_users_name_email", "users", ["name", "email"])
+    op.create_unique_constraint("UQ_users_username_email", "users", ["username", "email"])
 
 
 def downgrade() -> None:
-    op.drop_constraint("UQ_users_name_email", "users")
+    op.drop_constraint("UQ_users_username_email", "users")
     op.drop_table("users")

@@ -5,8 +5,8 @@ from aiohttp_middlewares import error_middleware as generate_error_middleware
 from aiohttp_middlewares.error import error_context
 from pydantic_core import ValidationError
 
-from utilities.constants import ERROR_CODE
-from utilities.schemas.response_schema import ErrorResponseSchema, ErrorsResponseSchema
+from core.base.schemas.response import ErrorResponseSchema, ErrorsResponseSchema
+from core.constants import ERROR_CODE
 
 logger = logging.getLogger(__name__)
 

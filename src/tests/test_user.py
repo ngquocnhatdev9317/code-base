@@ -31,9 +31,9 @@ class TestUser(BaseTestCase):
         response = await self.client_post(
             "/users",
             data={
-                "name": "usernameTest",
+                "username": "usernameTest",
                 "email": "emailTest@email.com",
-                "password": "abc",
+                "password": "abcdefgh",
             },
         )
         response_json = await response.json()
@@ -46,9 +46,9 @@ class TestUser(BaseTestCase):
         response = await self.client_post(
             "/users",
             data={
-                "name": "usernameTest",
+                "username": "usernameTest",
                 "wrongfield": "emailTest@email.com",
-                "password": "abc",
+                "password": "abcdefgh",
             },
         )
         response_json = await response.json()
@@ -63,8 +63,8 @@ class TestUser(BaseTestCase):
         response = await self.client_post(
             "/users",
             data={
-                "name": "usernameTest",
-                "password": "abc",
+                "username": "usernameTest",
+                "password": "abcdefgh",
             },
         )
         response_json = await response.json()
