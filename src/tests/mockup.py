@@ -1,15 +1,16 @@
 from faker import Faker
 from passlib.hash import pbkdf2_sha256
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
 from core.configs import POSTGRES_DB, URL
-from database.connection import Connection, get_postgres_container
+from database.connection import Connection
 from user.model import User
 
 fake = Faker()
 
 
-async def mock_user(count=1, **kwargs):
+def mock_user(count=1, **kwargs):
     user_instances = []
     for _ in range(count):
         username = kwargs.get("username", fake.name().lower().replace(" ", ""))
@@ -18,10 +19,10 @@ async def mock_user(count=1, **kwargs):
 
         user_instances.append(User(**{"username": username, "email": email, "password": pbkdf2_sha256.hash(password)}))
 
-    conn = Connection(engine=get_postgres_container(f"postgresql+asyncpg://{URL}/{POSTGRES_DB}"))
-    async with AsyncSession(conn.engine, expire_on_commit=False) as session:
+    conn = Connection(engine=create_engine(f"postgresql+psycopg2://{URL}/{POSTGRES_DB}"))
+    with Session(conn.engine, expire_on_commit=False) as session:
         session.add_all(user_instances)
-        await session.commit()
-        await session.aclose()
+        session.commit()
+        session.close()
 
-    await conn.engine.dispose()
+    conn.engine.dispose()

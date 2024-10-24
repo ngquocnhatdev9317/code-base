@@ -4,7 +4,7 @@ from tests.mockup import mock_user
 
 class TestAuthenticationLogin(BaseTestCase):
     async def test_login_api_return_correct_when_send_correct_parameters(self):
-        await mock_user(1, email="emailTest1@email.com", password="abc")
+        mock_user(1, email="emailTest1@email.com", password="abc")
 
         response = await self.client_post(
             "/auth/login",
@@ -19,7 +19,7 @@ class TestAuthenticationLogin(BaseTestCase):
         self.assertIn("refresh_token", response_json["result"])
 
     async def test_login_api_return_error_when_send_miss_parameters(self):
-        await mock_user(1, email="emailTest2@email.com", password="abc")
+        mock_user(1, email="emailTest2@email.com", password="abc")
 
         response = await self.client_post(
             "/auth/login",

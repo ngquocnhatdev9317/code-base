@@ -6,7 +6,7 @@ from tests.mockup import mock_user
 
 class TestUser(BaseTestCase):
     async def set_up_user(self, number=1) -> Coroutine[Any, Any, None]:
-        await mock_user(number)
+        mock_user(number)
 
     async def test_user_api_get_should_return_correct_when_database_have_data(self):
         await self.set_up_user(1)
