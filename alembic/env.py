@@ -6,7 +6,6 @@ from importlib import import_module
 from logging.config import fileConfig
 
 from sqlalchemy import create_engine
-from sqlalchemy.exc import OperationalError
 
 from alembic import context
 
@@ -70,23 +69,13 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    try:
-        connectable = create_engine(URL)
+    connectable = create_engine(URL)
 
-        with connectable.connect() as connection:
-            context.configure(connection=connection, target_metadata=target_metadata)
+    with connectable.connect() as connection:
+        context.configure(connection=connection, target_metadata=target_metadata)
 
-            with context.begin_transaction():
-                context.run_migrations()
-    except OperationalError:
-        new_url = URL.replace(f"{POSTGRES_HOST}:{POSTGRES_PORT}", f"localhost:{POSTGRES_PORT}")
-        connectable = create_engine(new_url)
-
-        with connectable.connect() as connection:
-            context.configure(connection=connection, target_metadata=target_metadata)
-
-            with context.begin_transaction():
-                context.run_migrations()
+        with context.begin_transaction():
+            context.run_migrations()
 
 
 if context.is_offline_mode():
