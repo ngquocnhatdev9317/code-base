@@ -1,5 +1,5 @@
 FROM python:3.10 AS compiler
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app/
 
@@ -18,6 +18,8 @@ COPY --from=compiler /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 COPY . /app/
-WORKDIR /app/src/
+WORKDIR /app/
 
-CMD [ "gunicorn", "main:create_app", "--bind", "0.0.0.0:8080", "--worker-class", "aiohttp.GunicornWebWorker", "--reload", "--log-config", "logging.conf" ]
+ENV PYTHONPATH=/app/src
+
+CMD [ "gunicorn", "src.main:create_app", "--bind", "0.0.0.0:8080", "--worker-class", "aiohttp.GunicornWebWorker", "--reload", "--log-config", "logging.conf" ]

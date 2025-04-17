@@ -11,6 +11,9 @@ services:
       - redis
     volumes:
       - .:/app
+    networks:
+      - postgres-network
+      - redis-network
     # command: bash -c "cd .. && alembic upgrade head"
 
   postgres:
@@ -31,18 +34,8 @@ services:
       - ${POSTGRES_PORT:-5432}:5432
     volumes:
       - postgres:/data/postgres
-
-  pgadmin4:
-    image: dpage/pgadmin4:latest
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - 80:80
-    volumes:
-      - pgadmin4:/var/lib/pgadmin
     networks:
-      - postgres
+      - postgres-network
 
   redis:
     image: redis:latest
@@ -52,12 +45,15 @@ services:
       - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis:/data/redis
+    networks:
+      - redis-network
 
 networks:
-  postgres:
+  postgres-network:
+    driver: bridge
+  redis-network:
     driver: bridge
 
 volumes:
   postgres:
   redis:
-  pgadmin4:
