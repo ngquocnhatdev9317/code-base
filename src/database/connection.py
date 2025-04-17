@@ -1,11 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
-from core.configs import POSTGRES_DB, URL
+from core.settings import settings
 
 
 class Connection:
     def __init__(self, engine: AsyncEngine = None) -> None:
-        self.__engine = engine or create_async_engine(f"postgresql+asyncpg://{URL}/{POSTGRES_DB}")
+        self.__engine = engine or create_async_engine(f"postgresql+asyncpg://{settings.url}/{settings.postgres_db}")
 
     @property
     def engine(self) -> AsyncEngine:

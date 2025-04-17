@@ -13,6 +13,17 @@ This is the code base for aio-http framework
 
 # Build local
 
+## Create virtualenv
+
+```bash
+
+$ python -m venv venv
+$ source venv/bin/activate
+$ pip install poetry
+$ poetry install
+
+```
+
 ## Build docker
 
 ```bash
@@ -30,19 +41,33 @@ Open swagger at [http://localhost:8080/docs](http://localhost:8080/docs)
 
 ```bash
 
-$ python -m pytest src/
+$ pytest src/
 
 # Run unittest with coverage report
-$ python -m pytest --cov src/
+$ pytest --cov src/
 
 ```
 
 ## Run format code after change files
 
 ```bash
-# format sort for import
-$ poetry run ruff format src/
 
+$ isort src/
+$ ruff format src/
+
+```
+
+# Implement new code
+
+## Install new package
+```bash
+
+# Add new package with poetry
+# poetry add <package>
+poetry add aiohttp
+
+# Export to requirements.txt
+poetry export --without-hashes --format=requirements.txt > requirements.txt
 
 ```
 
