@@ -2,14 +2,15 @@ import datetime
 import logging
 
 import jwt
+from aiohttp.web_exceptions import HTTPUnauthorized
 from passlib.hash import pbkdf2_sha256
 from redis.asyncio import Redis
 
 from authentication.schemas.authentication_schema import AuthUser, Token
-from database.base_service import BaseService
+from core.base.service import BaseService
+from core.constants import SESSION_KEY
+from core.settings import settings
 from user.repository import UserRepository
-from utilities.configs import ACCESS_EXPIRE, REFRESH_EXPIRE, SECRET_CODE
-from utilities.constants import SESSION_KEY
 
 logger = logging.getLogger(__name__)
 
@@ -29,30 +30,37 @@ class AuthenticationService(BaseService[UserRepository]):
 
             return token
 
-        return None
+        raise HTTPUnauthorized(reason="The user name or password are incorrect.")
 
     async def logout(self, access_token):
         await self.redis.delete(access_token)
 
     async def get_token(self, email: str) -> Token:
-        access_token_exp = datetime.datetime.now() + datetime.timedelta(seconds=ACCESS_EXPIRE)
-        refresh_token_exp = datetime.datetime.now() + datetime.timedelta(seconds=REFRESH_EXPIRE)
+        access_token_exp = datetime.datetime.now() + datetime.timedelta(seconds=settings.access_expire)
+        refresh_token_exp = datetime.datetime.now() + datetime.timedelta(seconds=settings.refresh_expire)
         access_token = jwt.encode(
             {"email": email, "exp": access_token_exp},
-            SECRET_CODE,
+            settings.secret_code,
         )
         refresh_token = jwt.encode(
             {"email": email, "exp": refresh_token_exp},
-            SECRET_CODE,
+            settings.secret_code,
         )
-        await self.redis.setex(access_token, ACCESS_EXPIRE, 1)
+        await self.redis.setex(access_token, settings.access_expire, 1)
         return Token(access_token=access_token, refresh_token=refresh_token)
 
     async def verify_access(self, access_token):
         result = await self.redis.getex(access_token)
         if not result:
             return None
-        payload = jwt.decode(access_token, SECRET_CODE, algorithms=["HS256"])
+
+        try:
+            payload = jwt.decode(access_token, settings.secret_code, algorithms=["HS256"])
+        except jwt.ExpiredSignatureError:
+            raise HTTPUnauthorized(reason="Access token expired")
+        except jwt.InvalidTokenError:
+            raise HTTPUnauthorized(reason="Invalid access token")
+
         email = payload.get("email")
 
         user = await self.repository.get_user_by_email(email)

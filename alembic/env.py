@@ -2,14 +2,16 @@ from __future__ import print_function
 
 import os
 import sys
+from importlib import import_module
 from logging.config import fileConfig
 
 from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
 
 from alembic import context
-from src.database.base_model import Base
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
+alembic_model = import_module("core.alembic")
 
 
 # this is the Alembic Config object, which provides
@@ -21,7 +23,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-target_metadata = Base.metadata
+target_metadata = alembic_model.BaseModel.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -68,13 +70,23 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = create_engine(URL)
+    try:
+        connectable = create_engine(URL)
 
-    with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        with connectable.connect() as connection:
+            context.configure(connection=connection, target_metadata=target_metadata)
 
-        with context.begin_transaction():
-            context.run_migrations()
+            with context.begin_transaction():
+                context.run_migrations()
+    except OperationalError:
+        new_url = URL.replace(f"{POSTGRES_HOST}:{POSTGRES_PORT}", f"localhost:{POSTGRES_PORT}")
+        connectable = create_engine(new_url)
+
+        with connectable.connect() as connection:
+            context.configure(connection=connection, target_metadata=target_metadata)
+
+            with context.begin_transaction():
+                context.run_migrations()
 
 
 if context.is_offline_mode():

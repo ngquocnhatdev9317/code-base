@@ -3,7 +3,6 @@ from functools import wraps
 from aiohttp.web_exceptions import HTTPUnauthorized
 
 from authentication.service import AuthenticationService
-from utilities.constants import AUTH_KEY
 
 
 async def authentication_handle(request):
@@ -29,20 +28,7 @@ def authentication_wrapper(func):
     @wraps(func)
     async def wrapper(self, *args, **kwargs):
         user = await authentication_handle(self.request)
-        self.request.app[AUTH_KEY] = user
+        self.request["user"] = user
         return await func(self, *args, **kwargs)
 
     return wrapper
-
-
-def authentication_class_wrapper(cls):
-    for attr_name, attr_value in cls.__dict__.items():
-        if callable(attr_value) and attr_name in ("get", "post", "put", "patch", "delete"):
-            wrapper = wraps(attr_value)(authentication_wrapper(attr_value))
-            wrapper.__doc__ = f"""
-                {wrapper.__doc__}
-        Security: bearerAuth
-        """
-            setattr(cls, attr_name, wrapper)
-
-    return cls
